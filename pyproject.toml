@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "personal-budget"
+version = "1"
+description = "parses transactions"
+authors = ["Ben Caldwell <ben.caldwell@messagemedia.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+google-api-python-client = "^2.122.0"
+google-auth-httplib2 = "^0.2.0"
+google-auth-oauthlib = "^1.2.0"
+gspread = "^6.0.2"
+oauth2client = "^4.1.3"
+thefuzz = "^0.22.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
