@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime
 from decimal import Decimal
-from typing import Optional
+from typing import List, Optional
 from models import TransactionType
 from re import search, compile
 
@@ -28,6 +28,7 @@ class Transaction():
     exchange_rate: Decimal = Decimal(0)
     country_code: str = ''
     native_country_amount: Decimal = Decimal(0)
+    raw_memo: str = ''
 
     def build(date: datetime,
               unique_id: int,
@@ -49,6 +50,7 @@ class Transaction():
         country_code: str = ''
         native_country_amount: Decimal = Decimal(0)
         matches = pattern_card_number.search(memo)
+        raw_memo = f'{memo} | {payee}'
         if matches:
             card = int(matches.group(1))
             memo = (matches.group(2))
@@ -97,4 +99,29 @@ class Transaction():
                            card,
                            exchange_rate,
                            country_code,
-                           native_country_amount)
+                           native_country_amount,
+                           raw_memo)
+    
+    def to_csv_list(self) -> List[str]:
+        return ['', 
+                self.date.strftime("%Y/%m/%d"), 
+                self.unique_id, 
+                TransactionType.to_asb_string(self.transaction_type), 
+                self.cheque_number, 
+                self.payee, 
+                self.memo, 
+                self.amount,
+                self.account_id,
+                self.transaction_type_primary_code,
+                self.transaction_type_secondary_code,
+                self.income_type,
+                self.notes,
+                self.transfer_account,
+                self.card_number,
+                str(self.exchange_rate),
+                self.country_code,
+                str(self.native_country_amount),
+                self.raw_memo]
+    
+    def __repr__(self) -> str:
+        pass

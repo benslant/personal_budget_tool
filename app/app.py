@@ -26,9 +26,9 @@ def main():
     sheets_importer = SheetsTransactionImporter(gc)
     transaction_service = TransactionsService()
 
-    account = csv_importer.get_account_from_file("/Users/ben.caldwell/Downloads/Export20240318143901.csv")
+    account = csv_importer.get_account_from_file("/Users/ben.caldwell/Downloads/Export20240315100941.csv")
     print(f'Processing transactions for account: {account} with label: {account.label}')
-    csv_transactions = csv_importer.load_transactions_from_file("/Users/ben.caldwell/Downloads/Export20240318143901.csv")
+    csv_transactions = csv_importer.load_transactions_from_file("/Users/ben.caldwell/Downloads/Export20240315100941.csv")
     sheet_transactions = sheets_importer.load_transactions_from_sheet(SAMPLE_SPREADSHEET_ID, "Add Chq Trans Here", 4)
     last_row = sheets_importer.get_last_row_in_transaction_sheet_based_on_transaction_list(sheet_transactions)
     last_common_transaction_id =  transaction_service.find_intersection_of_lists(csv_transactions, sheet_transactions)

@@ -36,7 +36,7 @@ class SheetsTransactionImporter():
     def add_transactions_to_sheet(self, sheet_id: str, worksheet_name: str, start_from_row: int, transactions: OrderedDict[int, Transaction]):
         sheet = self.google_sheets_client.open_by_key(sheet_id)
         work_sheet = sheet.worksheet(worksheet_name)
-        raw_transactions = [['', t.date.strftime("%Y/%m/%d"), t.unique_id, TransactionType.to_asb_string(t.transaction_type), '', t.payee, t.memo, t.amount] for _, t in transactions.items()]
+        raw_transactions = [t.to_csv_list() for _, t in transactions.items()]
         work_sheet.update(f'A{start_from_row + 1}', raw_transactions, value_input_option='USER_ENTERED')
     
     def get_last_row_in_transaction_sheet_based_on_transaction_list(self, transactions: OrderedDict[int, Transaction]) -> int:
