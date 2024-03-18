@@ -2,7 +2,7 @@ from collections import OrderedDict
 import csv
 from datetime import datetime
 from typing import Dict, List
-from models.transaction import Transaction, TransactionType
+from models import Transaction, TransactionType, Account
 
 
 class CSVTransactionImporter():
@@ -10,14 +10,22 @@ class CSVTransactionImporter():
     def __init__(self) -> None:
         pass
 
+    def get_account_from_file(self, file_name) -> Account:
+        account: Account = None
+        with open(file_name, mode='r') as transactions_file:
+            for line in range(2):
+                line_content = next(transactions_file)
+                if line == 1:
+                    account = Account.build(line_content)
+                pass
+        return account
+
     def load_raw_transactions_dict_from_file(self, file_name) -> Dict[str, str]:
         result: List[Dict[str, str]] = []
-
         with open(file_name, mode='r') as transactions_file:
-            for _ in range(6):
+            for line in range(6):
                 next(transactions_file)
             reader = csv.DictReader(transactions_file)
-            reader
             result = [r for r in reader]
 
         return result

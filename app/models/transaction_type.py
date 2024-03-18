@@ -17,6 +17,40 @@ class TransactionType(Enum):
     direct_credit = 13
 
     @staticmethod
+    def to_asb_string(transaction_type: 'TransactionType') -> str:
+        match transaction_type:
+            case TransactionType.debit:
+                return "DEBIT"
+            case TransactionType.transfer_in:
+                return "TFR IN"
+            case TransactionType.transfer_out:
+                return "TFR OUT"
+            case TransactionType.loan_interest:
+                return "LOAN INT"
+            case TransactionType.load_principle:
+                return "LOAN PRIN"
+            case TransactionType.eftpos:
+                return "EFTPOS"
+            case TransactionType.eftpos_payment:
+                return "EFTPOSP"
+            case TransactionType.bank_fee:
+                return "BANK FEE"
+            case TransactionType.interest:
+                return "INT"
+            case TransactionType.automatic_payment:
+                return "A/P"
+            case TransactionType.direct_debit:
+                return "D/D"
+            case TransactionType.credit: 
+                return "CREDIT"
+            case TransactionType.bill_payment:
+                return "BILLPAY"
+            case TransactionType.direct_credit:
+                return "D/C"
+            case _:
+                raise Exception(f'Unkown transaction type [{transaction_type}]')
+
+    @staticmethod
     def from_asb_csv_export_str(transaction_type: str) -> 'TransactionType':
         match transaction_type:
             case "DEBIT":
@@ -42,7 +76,7 @@ class TransactionType(Enum):
             case "D/D":
                 return TransactionType.direct_debit
             case "CREDIT":
-                return TransactionType.direct_debit
+                return TransactionType.credit
             case "BILLPAY":
                 return TransactionType.bill_payment
             case "D/C":
