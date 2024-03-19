@@ -13,6 +13,8 @@ google-auth-oauthlib = "^1.2.0"
 gspread = "^6.0.2"
 oauth2client = "^4.1.3"
 thefuzz = "^0.22.1"
+click = "^8.1.7"
+rich-click = "^1.7.4"
 
 [build-system]
 requires = ["poetry-core"]

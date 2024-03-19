@@ -1,0 +1,1 @@
+from commands.commands import command_list
