@@ -5,7 +5,7 @@ class TransactionType(Enum):
     transfer_in = 1
     transfer_out = 2
     loan_interest = 3
-    load_principle = 4
+    loan_principle = 4
     eftpos = 5
     eftpos_payment = 6
     bank_fee = 7
@@ -27,7 +27,7 @@ class TransactionType(Enum):
                 return "TFR OUT"
             case TransactionType.loan_interest:
                 return "LOAN INT"
-            case TransactionType.load_principle:
+            case TransactionType.loan_principle:
                 return "LOAN PRIN"
             case TransactionType.eftpos:
                 return "EFTPOS"

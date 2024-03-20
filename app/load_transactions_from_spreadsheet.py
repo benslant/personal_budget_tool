@@ -6,7 +6,7 @@ from re import sub, search
 from typing import Dict, List, Optional
 from gspread import Client, Worksheet
 from gspread.exceptions import SpreadsheetNotFound
-from models import Transaction, TransactionType
+from models import Transaction, TransactionType, Payee
 from thefuzz import fuzz
 from thefuzz import process
 
@@ -144,6 +144,15 @@ class SheetsTransactionImporter():
 
     def get_uncoded_transactions(self, transactions: OrderedDict[int, Transaction]) -> OrderedDict[int, Transaction]:
         return OrderedDict({k:v for k,v in transactions.items() if not v.transaction_type_primary_code})
+    
+    def get_unqiue_payees_from_transactions(self, transactions: OrderedDict[int, Transaction]) -> List[Payee]:
+        raw_transactions = [t for _, t in transactions.items() if t.transaction_type not in [TransactionType.transfer_in, TransactionType.transfer_out]]
+        sorted_uncoded = sorted(raw_transactions, key=lambda t: t.payee)
+        list_of_payees: List[Payee] = []
+        for k, g in groupby(sorted_uncoded, key=lambda t: t.payee):
+            transaction_list = list(g)
+            list_of_payees.append(Payee(k, transaction_list))
+        return list_of_payees
     
     def get_coding_history(self, grouped_transactions: OrderedDict[str, OrderedDict[int, Transaction]]) -> Dict[str, str]:
         likely_codes: Dict[str, str] = {}

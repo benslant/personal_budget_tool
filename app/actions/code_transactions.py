@@ -1,14 +1,11 @@
 from itertools import groupby
-from typing import Dict, List, Optional
-from googleapiclient.discovery import build
+from typing import List
 from googleapiclient.errors import HttpError
 from gspread import authorize, Client
 from oauth2client.service_account import ServiceAccountCredentials
-from models.transaction_csv_file import TransactionCSVFile
-from load_transactions_from_csv import CSVTransactionImporter 
+from models import TransactionType
 from load_transactions_from_spreadsheet import SheetsTransactionImporter
 from transactions_service import TransactionsService
-import rich_click as click
 from rich.console import Console
 
 scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
@@ -42,5 +39,15 @@ class CodeTransactions():
       console.print(f"Successfully coded [{len(coded)}] transactions")
       console.print(f"Failed to code [{len(remainder)}] transactions")
       console.print(f"Success rate: [{len(coded)/len(uncoded)*100:.2f}%]")
+
+      unique_payees = sheets_importer.get_unqiue_payees_from_transactions(result)
+      sorted_payees = sorted(unique_payees, key=lambda p: p.name, reverse=True)
+      console.print(f'There are [{len(unique_payees)}] uncodable payees!')
+      for payee in sorted_payees:
+        console.print(f'{payee.name} - ${payee.total_spend()} - {payee.transaction_count()} transactions')
+
+      # for transaction in uncoded_non_transfer:
+      #   console.print(f'{transaction.date.strftime('%d-%m-%Y')} - {transaction.payee} - {transaction.memo} - {transaction.transaction_type_primary_code}')
+
     except HttpError as err:
       print(err)

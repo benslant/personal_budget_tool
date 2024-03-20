@@ -1,6 +1,6 @@
 # from dependency_injector.wiring import Provide, inject
 import rich_click as click
-from actions import ImportTransactions, ListAvailableExports, CodeTransactions, DumpSheetToCSV
+from actions import ImportTransactions, ListAvailableExports, CodeTransactions, DumpSheetToCSV, GroupPayees
 
 @click.group("import")
 @click.pass_context
@@ -54,9 +54,20 @@ def dump(ctx, destination):
     dump = DumpSheetToCSV()
     dump.to_csv(destination=destination)
 
+@click.command('group_payees')
+@click.pass_context
+# @inject
+def group_payees(ctx):
+    '''
+    Import transactions to the spreadsheet from a CSV dump of transactions
+    '''
+    grouper = GroupPayees()
+    grouper.group()
+
 
 
 cli.add_command(import_transactions)
 cli.add_command(list_exports)
 cli.add_command(code_transactions)
 cli.add_command(dump)
+cli.add_command(group_payees)

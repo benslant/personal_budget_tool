@@ -10,7 +10,8 @@
             // "args":["import", "list_exports", "/Users/ben.caldwell/Downloads"]
             // "args":["import", "from_csv", "-o","/Users/ben.caldwell/Downloads"]
             // "args":["import", "code"]
-            "args":["import", "dump", "~/Downloads"]
+            "args":["import", "group_payees"]
+            // "args":["import", "dump", "~/Downloads"]
         }
     ]
 }
