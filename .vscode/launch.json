@@ -9,7 +9,8 @@
             "console": "integratedTerminal",
             // "args":["import", "list_exports", "/Users/ben.caldwell/Downloads"]
             // "args":["import", "from_csv", "-o","/Users/ben.caldwell/Downloads"]
-            "args":["import", "code"]
+            // "args":["import", "code"]
+            "args":["import", "dump", "~/Downloads"]
         }
     ]
 }

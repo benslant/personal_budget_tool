@@ -124,23 +124,26 @@ class Transaction():
     
     def to_csv_list(self) -> List[str]:
         return [self.date.strftime("%Y/%m/%d"), 
-                self.unique_id, 
+                str(self.unique_id), 
                 TransactionType.to_asb_string(self.transaction_type), 
-                self.cheque_number, 
-                self.payee, 
-                self.memo, 
-                self.amount,
-                self.account_id,
-                self.transaction_type_primary_code,
-                self.transaction_type_secondary_code,
-                self.income_type,
-                self.notes,
-                self.transfer_account,
-                self.card_number,
+                str(self.cheque_number), 
+                str(self.payee), 
+                str(self.memo), 
+                str(self.amount),
+                str(self.account_id),
+                str(self.transaction_type_primary_code),
+                str(self.transaction_type_secondary_code),
+                str(self.income_type),
+                str(self.notes),
+                str(self.transfer_account),
+                str(self.card_number),
                 str(self.exchange_rate),
-                self.country_code,
+                str(self.country_code),
                 str(self.native_country_amount),
-                self.raw_memo]
+                str(self.raw_memo)]
     
+    def to_csv_line(self) -> str:
+        return ','.join(self.to_csv_list())
+
     def __repr__(self) -> str:
         pass

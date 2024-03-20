@@ -4,7 +4,7 @@ from decimal import Decimal
 from itertools import groupby
 from re import sub, search
 from typing import Dict, List, Optional
-from gspread import Client
+from gspread import Client, Worksheet
 from gspread.exceptions import SpreadsheetNotFound
 from models import Transaction, TransactionType
 from thefuzz import fuzz
@@ -33,6 +33,11 @@ class SheetsTransactionImporter():
             result = False
         finally:
             return result
+        
+    def list_all_sheets(self, sheet_id: str) -> List[Worksheet]:
+        sheet = self.google_sheets_client.open_by_key(sheet_id)
+        result = sheet.worksheets()
+        return result
         
     def create_sheet(self, sheet_id, worksheet_name: str) -> bool:
         sheet = self.google_sheets_client.open_by_key(sheet_id)
