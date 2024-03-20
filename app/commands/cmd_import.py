@@ -1,6 +1,6 @@
 # from dependency_injector.wiring import Provide, inject
 import rich_click as click
-from actions import ImportTransactions, ListAvailableExports
+from actions import ImportTransactions, ListAvailableExports, CodeTransactions
 
 @click.group("import")
 @click.pass_context
@@ -33,5 +33,18 @@ def list_exports(ctx, folder_name: str):
     importer = ListAvailableExports()
     importer.list_exports_in_directory(folder_name)
 
+@click.command('code')
+@click.pass_context
+# @inject
+def code_transactions(ctx):
+    '''
+    Import transactions to the spreadsheet from a CSV dump of transactions
+    '''
+    coder = CodeTransactions()
+    coder.code_transactions()
+
+
+
 cli.add_command(import_transactions)
 cli.add_command(list_exports)
+cli.add_command(code_transactions)
