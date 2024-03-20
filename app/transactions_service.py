@@ -25,6 +25,6 @@ class TransactionsService():
         set_two = set(list_two)
 
         intersection = sorted(list(set_one.intersection(set_two)))
-        last_common_unique_id = list(intersection)[-1:][0]
+        last_common_unique_id = list(intersection)[-1:][0] if len(intersection) > 0 else 0
         
         return int(last_common_unique_id)        

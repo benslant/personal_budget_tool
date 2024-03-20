@@ -102,9 +102,28 @@ class Transaction():
                            native_country_amount,
                            raw_memo)
     
+    def get_csv_headers() -> List[str]:
+        return ['Date', 
+                'Unique Id', 
+                'Transaction Type', 
+                'Cheque Number', 
+                'Payee', 
+                'Memo', 
+                'Amount', 
+                'Account Id',
+                'Transaction Type Primary Code', 
+                'Transaction Type Secondary Code', 
+                'Income Type', 
+                'Notes', 
+                'Transfer Account',
+                'Card',
+                'Exchange Rate',
+                'Country Code',
+                'Native Country Amount',
+                'Raw Memo']
+    
     def to_csv_list(self) -> List[str]:
-        return ['', 
-                self.date.strftime("%Y/%m/%d"), 
+        return [self.date.strftime("%Y/%m/%d"), 
                 self.unique_id, 
                 TransactionType.to_asb_string(self.transaction_type), 
                 self.cheque_number, 

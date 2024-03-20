@@ -5,6 +5,7 @@ from itertools import groupby
 from re import sub, search
 from typing import Dict, List, Optional
 from gspread import Client
+from gspread.exceptions import SpreadsheetNotFound
 from models import Transaction, TransactionType
 from thefuzz import fuzz
 from thefuzz import process
@@ -20,23 +21,50 @@ class SheetsTransactionImporter():
         work_sheet = sheet.worksheet(worksheet_name)
         rows = work_sheet.get_all_values()[start_from_row:]
         return rows
+    
+    def does_sheet_exist(self, sheet_id: str, worksheet_name: str) -> bool:
+        result: bool = False
+        try:
+            sheet = self.google_sheets_client.open_by_key(sheet_id)
+            self.google_sheets_client.open_by_key(sheet_id)
+            a = sheet.worksheet(worksheet_name)
+            result = True
+        except SpreadsheetNotFound as e:
+            result = False
+        finally:
+            return result
+        
+    def create_sheet(self, sheet_id, worksheet_name: str) -> bool:
+        sheet = self.google_sheets_client.open_by_key(sheet_id)
+        sheet.add_worksheet(worksheet_name, rows="100", cols="20")
 
     def load_transactions_from_sheet(self, sheet_id: str, worksheet_name: str, start_from_row: int = 0) -> OrderedDict[int, Transaction]:
         rows = self.get_rows_from_worksheet(sheet_id, worksheet_name, start_from_row)
-        result = OrderedDict({int(r[2]): Transaction(date=datetime.strptime(r[1], "%Y/%m/%d"),
-                              unique_id=int(r[2]),
-                              transaction_type=TransactionType.from_asb_csv_export_str(r[3]),
-                              cheque_number=r[4],
-                              payee=r[5],
-                              memo=r[6],
-                              amount=Decimal(r[7])) for r in rows})
+        for r in rows:
+            try:
+                Decimal(r[6])
+            except Exception as e:
+                pass
+
+        result = OrderedDict({int(r[1]): Transaction(date=datetime.strptime(r[0], "%Y/%m/%d"),
+                              unique_id=int(r[1]),
+                              transaction_type=TransactionType.from_asb_csv_export_str(r[2]),
+                              cheque_number=r[3],
+                              payee=r[4],
+                              memo=r[5],
+                              amount=Decimal(r[6])) for r in rows})
 
         return result
     
     def add_transactions_to_sheet(self, sheet_id: str, worksheet_name: str, start_from_row: int, transactions: OrderedDict[int, Transaction]):
+        if not self.does_sheet_exist(sheet_id, worksheet_name):
+            self.create_sheet(sheet_id, worksheet_name)
+
         sheet = self.google_sheets_client.open_by_key(sheet_id)
         work_sheet = sheet.worksheet(worksheet_name)
         raw_transactions = [t.to_csv_list() for _, t in transactions.items()]
+        new_rows = [['']]*len(raw_transactions)
+        work_sheet.append_rows(new_rows)
         work_sheet.update(f'A{start_from_row + 1}', raw_transactions, value_input_option='USER_ENTERED')
     
     def get_last_row_in_transaction_sheet_based_on_transaction_list(self, transactions: OrderedDict[int, Transaction]) -> int:

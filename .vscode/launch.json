@@ -7,8 +7,8 @@
             "request": "launch",
             "program": "${workspaceFolder}/app/app.py",
             "console": "integratedTerminal",
-            "args":["import", "list_exports", "/Users/ben.caldwell/Downloads"]
-            // "args":["import", "from_csv"]
+            // "args":["import", "list_exports", "/Users/ben.caldwell/Downloads"]
+            "args":["import", "from_csv", "-o","/Users/ben.caldwell/Downloads"]
         }
     ]
 }

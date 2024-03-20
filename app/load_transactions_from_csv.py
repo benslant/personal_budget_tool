@@ -50,7 +50,7 @@ class CSVTransactionImporter():
                 pass
         return (from_date, to_date)
     
-    def list_export_files_in_folder(self, folder_name) -> List[TransactionCSVFile]:
+    def list_export_files_in_folder(self, folder_name, sort_desc: bool = False) -> List[TransactionCSVFile]:
         result: List[TransactionCSVFile] = []
         files = [f for f in listdir(folder_name) if isfile(join(folder_name, f))]
         for file in files:
@@ -71,6 +71,8 @@ class CSVTransactionImporter():
                                                  account, 
                                                  date_span[0], 
                                                  date_span[1]))
+        if sort_desc: 
+            return sorted(result, key=lambda a: a.to_date, reverse=True)
         return result
 
     def load_raw_transactions_dict_from_file(self, file_name) -> Dict[str, str]:

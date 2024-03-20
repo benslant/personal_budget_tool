@@ -11,15 +11,16 @@ def cli(ctx):
     pass
 
 @click.command('from_csv')
-@click.argument("filename", type=click.STRING)
+@click.option('-f', "file_name", required=False, type=click.STRING)
+@click.option('-o', "folder_name", required=False, type=click.STRING)
 @click.pass_context
 # @inject
-def import_transactions(ctx, filename: str):
+def import_transactions(ctx, file_name: str, folder_name: str):
     '''
     Import transactions to the spreadsheet from a CSV dump of transactions
     '''
     importer = ImportTransactions()
-    importer.import_transactions(filename)
+    importer.import_transactions(file_name, folder_name)
 
 @click.command('list_exports')
 @click.argument("folder_name", type=click.STRING)
