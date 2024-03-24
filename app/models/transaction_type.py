@@ -62,7 +62,7 @@ class TransactionType(Enum):
             case "LOAN INT":
                 return TransactionType.loan_interest
             case "LOAN PRIN":
-                return TransactionType.load_principle
+                return TransactionType.loan_principle
             case "EFTPOS":
                 return TransactionType.eftpos
             case "EFTPOSP":

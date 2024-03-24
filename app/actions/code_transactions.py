@@ -6,7 +6,9 @@ from oauth2client.service_account import ServiceAccountCredentials
 from models import TransactionType
 from load_transactions_from_spreadsheet import SheetsTransactionImporter
 from transactions_service import TransactionsService
+from transaction_code_service import TransactionCodeService
 from rich.console import Console
+import click
 
 scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
 
@@ -20,12 +22,26 @@ class CodeTransactions():
   def __init__(self) -> None:
     pass
 
+  def select_transaction_code_options(self, codes: List[str], console):
+    length = len(codes)
+    spacing = 5
+    for index in range(0, len(codes), spacing):
+      end = index + spacing if index + spacing < length else length
+      a = [f'({c[0]}) {c[1]}' for c in list(zip(range(index, end), codes[index:end]))]
+      console.print(' | '.join(a))
+
+    selection = click.prompt("Select a code", type=int)
+    return selection
+
   def code_transactions(self):
     console = Console()
     try:
       gc: Client = authorize(credentials)
       sheets_importer = SheetsTransactionImporter(gc)
       transaction_service = TransactionsService()
+      code_service = TransactionCodeService(gc)
+
+      codes = code_service.get_transaction_codes(SAMPLE_SPREADSHEET_ID)
 
       result = sheets_importer.load_coded_transactions_from_spreadsheet(SAMPLE_SPREADSHEET_ID, "Code Here")
       grouped_by_payee = sheets_importer.group_transactions_by_payee(result)
@@ -40,14 +56,16 @@ class CodeTransactions():
       console.print(f"Failed to code [{len(remainder)}] transactions")
       console.print(f"Success rate: [{len(coded)/len(uncoded)*100:.2f}%]")
 
-      unique_payees = sheets_importer.get_unqiue_payees_from_transactions(result)
+      unique_payees = sheets_importer.get_unqiue_payees_from_transactions(remainder)
       sorted_payees = sorted(unique_payees, key=lambda p: p.name, reverse=True)
-      console.print(f'There are [{len(unique_payees)}] uncodable payees!')
-      for payee in sorted_payees:
-        console.print(f'{payee.name} - ${payee.total_spend()} - {payee.transaction_count()} transactions')
+      console.print(f'There are [{len(unique_payees)}] unique uncodable payees!')
 
-      # for transaction in uncoded_non_transfer:
-      #   console.print(f'{transaction.date.strftime('%d-%m-%Y')} - {transaction.payee} - {transaction.memo} - {transaction.transaction_type_primary_code}')
+      for code, transaction in remainder.items():
+        console.print(f'{transaction.date.strftime('%d-%m-%Y')} | {transaction.memo} | {transaction.payee} | ${transaction.amount}')
+        selected = self.select_transaction_code_options(codes, console)
+        transaction.transaction_type_primary_code = codes[selected]
+        coded[code] = transaction
+      pass
 
     except HttpError as err:
       print(err)
