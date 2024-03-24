@@ -43,6 +43,8 @@ class CodeTransactions():
 
       codes = code_service.get_transaction_codes(SAMPLE_SPREADSHEET_ID)
 
+      # sheets_importer.load_worksheet_transactions(SAMPLE_SPREADSHEET_ID, "Code Here", 1)
+
       result = sheets_importer.load_coded_transactions_from_spreadsheet(SAMPLE_SPREADSHEET_ID, "Code Here")
       unique_payees = transaction_service.group_payees_by_name_similarity(result)
       grouped_by_payee = sheets_importer.group_transactions_by_payee(result)

@@ -6,7 +6,7 @@ from re import sub, search
 from typing import Dict, List, Optional
 from gspread import Client, Worksheet
 from gspread.exceptions import SpreadsheetNotFound
-from models import Transaction, TransactionType, Payee
+from models import Transaction, TransactionType, Payee, GoogleSheetTransaction, GoogleTransactionWorksheet
 from thefuzz import fuzz
 from thefuzz import process
 
@@ -61,6 +61,13 @@ class SheetsTransactionImporter():
 
         return result
     
+    def load_worksheet_transactions(self, sheet_id: str, worksheet_name: str, start_from_row: int = 0) -> GoogleTransactionWorksheet:
+        result: GoogleTransactionWorksheet = GoogleTransactionWorksheet(worksheet_name, {})
+        raw_transactions = self.load_transactions_from_sheet(sheet_id, worksheet_name, start_from_row)
+        for row_index, transaction in enumerate(raw_transactions):
+            result.transactions[row_index+start_from_row] = transaction
+        return result
+            
     def add_transactions_to_sheet(self, sheet_id: str, worksheet_name: str, start_from_row: int, transactions: OrderedDict[int, Transaction]):
         if not self.does_sheet_exist(sheet_id, worksheet_name):
             self.create_sheet(sheet_id, worksheet_name)
