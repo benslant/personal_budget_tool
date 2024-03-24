@@ -4,3 +4,5 @@ from models.account import Account
 from models.transaction_csv_file import TransactionCSVFile
 from models.payee import Payee
 from models.alias_match import AliasMatch
+from models.google_sheet_transaction import GoogleSheetTransaction
+from models.google_transaction_worksheet import GoogleTransactionWorksheet

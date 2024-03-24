@@ -69,7 +69,8 @@ class TransactionsService():
             list_of_payees.append(Payee(k, transaction_list))
         return list_of_payees
     
-    def group_payees_by_name_similarity(self, payees: List[Payee]) -> Dict[str, Payee]:
+    def group_payees_by_name_similarity(self, transactions: List[Transaction]) -> Dict[str, Payee]:
+        payees = self.get_unqiue_payees_from_transactions(transactions)
         stripped_names = self.get_payee_names_stripped_of_whitespace(payees)
         sorted_names = sorted(stripped_names)
         aliases: Dict[str, List[str]] = {}

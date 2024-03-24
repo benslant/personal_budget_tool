@@ -26,9 +26,7 @@ class GroupPayees():
     transaction_service = TransactionsService()
 
     result = sheets_importer.load_coded_transactions_from_spreadsheet(SAMPLE_SPREADSHEET_ID, "Code Here")
-    unique_payees = transaction_service.get_unqiue_payees_from_transactions(result)
-    console.print(f'There are [{len(unique_payees)}] unqiue payees!')
-    aliases = transaction_service.group_payees_by_name_similarity(unique_payees)
+    aliases = transaction_service.group_payees_by_name_similarity(result)
 
     for alias, alternates in aliases.items():
       console.print(f'{alias}')
