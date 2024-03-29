@@ -3,7 +3,7 @@ from datetime import datetime
 from decimal import Decimal
 from typing import List, Optional
 from models import TransactionType
-from re import search, compile
+from re import compile
 
 pattern_card_number = compile("CARD ([0-9]{4})(.*)")
 pattern_exchange_rate = compile("(.*)(at ([0-9]{1}\.[0-9]{4}))")
@@ -12,7 +12,7 @@ pattern_native_amount = compile("^([A-Z]{3}) ([0-9]+.[0-9]{2})(.*)")
 @dataclass
 class Transaction():
     date: datetime
-    unique_id: int
+    transaction_id: int
     transaction_type: TransactionType
     cheque_number: str
     payee: str
@@ -29,9 +29,10 @@ class Transaction():
     country_code: str = ''
     native_country_amount: Decimal = Decimal(0)
     raw_memo: str = ''
+    account_number: str = ''
 
     def build(date: datetime,
-              unique_id: int,
+              transaction_id: int,
               transaction_type: TransactionType,
               cheque_number: str,
               payee: str,
@@ -42,7 +43,8 @@ class Transaction():
               transaction_type_secondary_code: str ='',
               income_type: str = '',
               notes: str = '',
-              transfer_account: str = '') -> 'Transaction':
+              transfer_account: str = '',
+              account_number: str = '') -> 'Transaction':
         actual_payee: str = payee
         actual_memo: str = memo
         card: Optional[int] = None
@@ -84,7 +86,7 @@ class Transaction():
             actual_memo = actual_payee
 
         return Transaction(date, 
-                           unique_id, 
+                           transaction_id, 
                            transaction_type, 
                            cheque_number, 
                            actual_payee, 
@@ -100,7 +102,8 @@ class Transaction():
                            exchange_rate,
                            country_code,
                            native_country_amount,
-                           raw_memo)
+                           raw_memo,
+                           account_number=account_number)
     
     def get_csv_headers() -> List[str]:
         return ['Date', 
@@ -124,7 +127,29 @@ class Transaction():
     
     def to_csv_list(self) -> List[str]:
         return [self.date.strftime("%Y/%m/%d"), 
-                str(self.unique_id), 
+                str(self.transaction_id), 
+                TransactionType.to_asb_string(self.transaction_type), 
+                str(self.cheque_number), 
+                str(self.payee), 
+                str(self.memo), 
+                str(self.amount),
+                str(self.account_id),
+                str(self.transaction_type_primary_code),
+                str(self.transaction_type_secondary_code),
+                str(self.income_type),
+                str(self.notes),
+                str(self.transfer_account),
+                str(self.card_number),
+                str(self.exchange_rate),
+                str(self.country_code),
+                str(self.native_country_amount),
+                str(self.raw_memo)]
+    
+    def to_csv_list_account_local_id(self) -> List[str]:
+        return [self.date.strftime("%Y/%m/%d"),
+                self.unique_id(),
+                self.account_number,
+                str(self.transaction_id), 
                 TransactionType.to_asb_string(self.transaction_type), 
                 str(self.cheque_number), 
                 str(self.payee), 
@@ -144,6 +169,9 @@ class Transaction():
     
     def to_csv_line(self) -> str:
         return ','.join(self.to_csv_list())
+    
+    def unique_id(self) -> str:
+        return f'{self.transaction_id}-{self.account_number}'
 
     def __repr__(self) -> str:
         pass

@@ -45,7 +45,9 @@ class CodeTransactions():
 
       # sheets_importer.load_worksheet_transactions(SAMPLE_SPREADSHEET_ID, "Code Here", 1)
 
-      result = sheets_importer.load_coded_transactions_from_spreadsheet(SAMPLE_SPREADSHEET_ID, "Code Here")
+      google_transation_sheet = sheets_importer.load_worksheet_transactions(SAMPLE_SPREADSHEET_ID, "Code Here")
+
+      result = google_transation_sheet.transactions
       unique_payees = transaction_service.group_payees_by_name_similarity(result)
       grouped_by_payee = sheets_importer.group_transactions_by_payee(result)
       payees = [k for k,_ in grouped_by_payee.items()]
@@ -62,12 +64,17 @@ class CodeTransactions():
       unique_payees = transaction_service.get_unqiue_payees_from_transactions(remainder)
       console.print(f'There are [{len(unique_payees)}] unique uncodable payees!')
 
+      worksheet = sheets_importer.get_worksheet(SAMPLE_SPREADSHEET_ID, "Code Here")
+
+      a = google_transation_sheet.get_row_by_transaction_id(2022061303)
+      b = google_transation_sheet.get_transaction_by_row(923)
+      c = google_transation_sheet.get_transaction_by_row(1156)
+
       for code, transaction in remainder.items():
-        console.print(f'{transaction.date.strftime('%d-%m-%Y')} | {transaction.memo} | {transaction.payee} | ${transaction.amount}\n\n')
+        console.print(f'{transaction.date.strftime('%d-%m-%Y')} | row-{transaction.row} | {transaction.transaction_id} | {transaction.memo} | {transaction.payee} | ${transaction.amount}\n\n')
         selected = self.select_transaction_code_options(codes, console)
         transaction.transaction_type_primary_code = codes[selected]
-        coded[code] = transaction
-      pass
+        sheets_importer.write_row_to_sheet(worksheet, transaction.row)
 
     except HttpError as err:
       print(err)

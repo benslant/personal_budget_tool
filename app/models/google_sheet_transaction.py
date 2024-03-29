@@ -4,7 +4,6 @@ from models import Transaction
 
 
 @dataclass
-class GoogleSheetTransaction():
-    worksheet_name: str
-    row: id
-    transaction: Transaction
+class GoogleSheetTransaction(Transaction):
+    worksheet_name: str = ''
+    row: id = 0
