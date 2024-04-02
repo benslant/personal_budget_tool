@@ -66,15 +66,23 @@ class CodeTransactions():
 
       worksheet = sheets_importer.get_worksheet(SAMPLE_SPREADSHEET_ID, "Code Here")
 
-      a = google_transation_sheet.get_row_by_transaction_id(2022061303)
+      # a = google_transation_sheet.get_row_by_transaction_id(2022061303)
       b = google_transation_sheet.get_transaction_by_row(923)
       c = google_transation_sheet.get_transaction_by_row(1156)
+
+      with click.progressbar(length=len(coded), label='Autocoding transactions that match previous patterns...') as bar: 
+        for _, transaction in coded.items():
+          bar.label = f'Autocoding transactions that match previous patterns: Setting [{transaction.payee}] on [{transaction.date.strftime('%d-%m-&Y')}] as -> [{transaction.transaction_type_primary_code}]'
+          sheets_importer.write_row_to_sheet(worksheet, transaction.row, transaction.transaction_type_primary_code)
+          bar.update(1)
 
       for code, transaction in remainder.items():
         console.print(f'{transaction.date.strftime('%d-%m-%Y')} | row-{transaction.row} | {transaction.transaction_id} | {transaction.memo} | {transaction.payee} | ${transaction.amount}\n\n')
         selected = self.select_transaction_code_options(codes, console)
+        if selected > len(codes) - 1:
+          continue
         transaction.transaction_type_primary_code = codes[selected]
-        sheets_importer.write_row_to_sheet(worksheet, transaction.row)
+        sheets_importer.write_row_to_sheet(worksheet, transaction.row, transaction.transaction_type_primary_code)
 
     except HttpError as err:
       print(err)

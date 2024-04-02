@@ -44,3 +44,6 @@ class TransactionCSVFile():
         with open(f'{destination}/{file_name}', 'w+') as csv_file:
             for line in lines:
                 csv_file.write(f'{line}\n')
+
+    def __repr__(self) -> str:
+        return f'{self.folder_name}/{self.file_name}'

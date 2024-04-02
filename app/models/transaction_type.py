@@ -15,6 +15,7 @@ class TransactionType(Enum):
     credit = 11
     bill_payment = 12
     direct_credit = 13
+    atm_withdrawal = 14
 
     @staticmethod
     def to_asb_string(transaction_type: 'TransactionType') -> str:
@@ -47,6 +48,8 @@ class TransactionType(Enum):
                 return "BILLPAY"
             case TransactionType.direct_credit:
                 return "D/C"
+            case TransactionType.atm_withdrawal:
+                return "ATM"
             case _:
                 raise Exception(f'Unkown transaction type [{transaction_type}]')
 
@@ -81,5 +84,7 @@ class TransactionType(Enum):
                 return TransactionType.bill_payment
             case "D/C":
                 return TransactionType.direct_credit
+            case "ATM":
+                return TransactionType.atm_withdrawal
             case _:
                 raise Exception(f'Unkown transaction type [{transaction_type}]')

@@ -12,7 +12,7 @@ pattern_native_amount = compile("^([A-Z]{3}) ([0-9]+.[0-9]{2})(.*)")
 @dataclass
 class Transaction():
     date: datetime
-    transaction_id: int
+    transaction_id: str
     transaction_type: TransactionType
     cheque_number: str
     payee: str
@@ -32,7 +32,7 @@ class Transaction():
     account_number: str = ''
 
     def build(date: datetime,
-              transaction_id: int,
+              transaction_id: str,
               transaction_type: TransactionType,
               cheque_number: str,
               payee: str,
@@ -161,7 +161,7 @@ class Transaction():
                 str(self.income_type),
                 str(self.notes),
                 str(self.transfer_account),
-                str(self.card_number),
+                str(self.card_number) if self.card_number else '',
                 str(self.exchange_rate),
                 str(self.country_code),
                 str(self.native_country_amount),

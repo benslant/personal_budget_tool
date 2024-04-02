@@ -46,10 +46,10 @@ class SheetsTransactionImporter():
         sheet = self.google_sheets_client.open_by_key(sheet_id)
         sheet.add_worksheet(worksheet_name, rows="100", cols="20")
 
-    def write_row_to_sheet(self, worksheet, row: int):
+    def write_row_to_sheet(self, worksheet, row: int, value: str):
         try:
-            cell=f'L{row}'
-            worksheet.update(cell, 'fdgsdfgs')
+            cell = worksheet.acell(f'N{row}')
+            worksheet.update_cell(cell.row, cell.col, value)
         except Exception as e:
             pass
 
@@ -57,14 +57,17 @@ class SheetsTransactionImporter():
     def load_transactions_from_sheet(self, sheet_id: str, worksheet_name: str, account_number: str, start_from_row: int = 0) -> OrderedDict[int, Transaction]:
         rows = self.get_rows_from_worksheet(sheet_id, worksheet_name, start_from_row)
 
-        result = OrderedDict({int(r[1]): Transaction(date=datetime.strptime(r[0], "%Y/%m/%d"),
-                              transaction_id=int(r[1]),
-                              transaction_type=TransactionType.from_asb_csv_export_str(r[2]),
-                              cheque_number=r[3],
-                              payee=r[4],
-                              memo=r[5],
-                              amount=Decimal(r[6]),
-                              account_number=account_number) for r in rows if r}) if rows else OrderedDict()
+        try:
+            result = OrderedDict({int(r[3]): Transaction(date=datetime.strptime(r[0], "%Y/%m/%d"),
+                                transaction_id=r[3],
+                                transaction_type=TransactionType.from_asb_csv_export_str(r[4]),
+                                cheque_number=r[5],
+                                payee=r[6],
+                                memo=r[7],
+                                amount=Decimal(r[8]),
+                                account_number=account_number) for r in rows if r}) if rows else OrderedDict()
+        except Exception as e:
+            raise Exception(f'Failed to process transaction! {e.args}')
 
         return result
     
@@ -85,7 +88,7 @@ class SheetsTransactionImporter():
         sheet = self.google_sheets_client.open_by_key(sheet_id)
         work_sheet = sheet.worksheet(worksheet_name)
         raw_transactions = [t.to_csv_list_account_local_id() for _, t in transactions.items()]
-        new_rows = [['']]*len(raw_transactions)
+        new_rows = [['']]*(len(raw_transactions)+2)
         work_sheet.append_rows(new_rows)
         work_sheet.update(f'A{start_from_row + 1}', raw_transactions, value_input_option='USER_ENTERED')
     
@@ -97,22 +100,23 @@ class SheetsTransactionImporter():
         rows = self.get_rows_from_worksheet(sheet_id, worksheet_name, start_row)
         
         for _, r in enumerate(rows):
-            if not r[9] and not r[10]:
+            if not r[11] and not r[12]:
                 amount = 0
             else:
-                amount= Decimal(sub(r'[^\d.]', '', r[9])) if r[9] else Decimal(sub(r'[^\d.]', '', r[10]))
+                amount= Decimal(sub(r'[^\d.]', '', r[11])) if r[11] else Decimal(sub(r'[^\d.]', '', r[12]))
             if not r[5]: 
                 continue
-            result[int(r[5])] = Transaction.build(date=datetime.strptime(r[0].strip(), "%A %d/%m/%Y"),
-                                                  unique_id=int(r[5]),
-                                                  transaction_type=TransactionType.from_asb_csv_export_str(r[6]),
+            result[r[5]] = Transaction.build(date=datetime.strptime(r[0].strip(), "%A %d/%m/%Y"),
+                                                  transaction_id=r[6],
+                                                  transaction_type=TransactionType.from_asb_csv_export_str(r[8]),
                                                   cheque_number='',
-                                                  payee=r[7],
-                                                  memo=r[8],
+                                                  payee=r[9],
+                                                  memo=r[9],
                                                   amount=amount,
-                                                  transaction_type_primary_code=r[11],
-                                                  transaction_type_secondary_code=r[12],
-                                                  transfer_account=r[3])
+                                                  transaction_type_primary_code=r[13],
+                                                  transaction_type_secondary_code=r[14],
+                                                  transfer_account=r[3],
+                                                  account_number=r[7])
 
         return result
     

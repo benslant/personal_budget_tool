@@ -60,7 +60,7 @@ class ImportTransactions():
         sheets_importer.create_sheet(SAMPLE_SPREADSHEET_ID, sheet_name)
       print(f'Processing transactions for account: {account} with label: {account.label}')
       csv_transactions = csv_importer.load_transactions_from_file(file_name)
-      sheet_transactions = sheets_importer.load_transactions_from_sheet(SAMPLE_SPREADSHEET_ID, sheet_name, 4)
+      sheet_transactions = sheets_importer.load_transactions_from_sheet(SAMPLE_SPREADSHEET_ID, sheet_name, account_number=account.__repr__(), start_from_row=1)
       last_common_transaction_id =  transaction_service.find_intersection_of_lists(csv_transactions, sheet_transactions)
       unique_transactions = transaction_service.slice_transaction_list(last_common_transaction_id, csv_transactions)
       if len(unique_transactions) > 0:

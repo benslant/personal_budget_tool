@@ -3,3 +3,6 @@ from actions.list_files_in_folder import ListAvailableExports
 from actions.code_transactions import CodeTransactions
 from actions.dump_sheet_to_csv import DumpSheetToCSV
 from actions.group_payees import GroupPayees
+from actions.list_spend_by_category import ListByCategory
+from actions.get_weekly_transactions import GetWeeklyTransactions
+from actions.cleanup_exports import CleanupExports

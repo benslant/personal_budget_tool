@@ -1,6 +1,6 @@
 # from dependency_injector.wiring import Provide, inject
 import rich_click as click
-from actions import ImportTransactions, ListAvailableExports, CodeTransactions, DumpSheetToCSV, GroupPayees
+from actions import ImportTransactions, ListAvailableExports, CodeTransactions, DumpSheetToCSV, GroupPayees, ListByCategory, GetWeeklyTransactions, CleanupExports
 
 @click.group("import")
 @click.pass_context
@@ -64,6 +64,39 @@ def group_payees(ctx):
     grouper = GroupPayees()
     grouper.group()
 
+@click.command('list_by_category')
+@click.pass_context
+# @inject
+def list_by_category(ctx):
+    '''
+    Import transactions to the spreadsheet from a CSV dump of transactions
+    '''
+    grouper = ListByCategory()
+    grouper.list_by_category()
+
+@click.command('weekly_transactions')
+@click.option('-r', 'rweek', type=click.INT, help='Specify the relative week you want to list')
+@click.option('-y', 'year', type=click.INT, help='Specify the year you want to list')
+@click.pass_context
+# @inject
+def weekly_transactions(ctx, year: int = 0, rweek: int = 0):
+    '''
+    Import transactions to the spreadsheet from a CSV dump of transactions
+    '''
+    grouper = GetWeeklyTransactions()
+    grouper.list_weekly_transactions(year, rweek)
+
+@click.command('cleanup_exports')
+@click.argument("folder_name", type=click.STRING)
+@click.pass_context
+# @inject
+def cleanup_exports(ctx, folder_name: str):
+    '''
+    Import transactions to the spreadsheet from a CSV dump of transactions
+    '''
+    importer = CleanupExports()
+    importer.remove_export_files_from_folder(folder_name)
+
 
 
 cli.add_command(import_transactions)
@@ -71,3 +104,6 @@ cli.add_command(list_exports)
 cli.add_command(code_transactions)
 cli.add_command(dump)
 cli.add_command(group_payees)
+cli.add_command(list_by_category)
+cli.add_command(weekly_transactions)
+cli.add_command(cleanup_exports)
