@@ -1,6 +1,6 @@
 # from dependency_injector.wiring import Provide, inject
 import rich_click as click
-from actions import ImportTransactions, ListAvailableExports, CodeTransactions, DumpSheetToCSV, GroupPayees, ListByCategory, GetWeeklyTransactions, CleanupExports
+from actions import ImportTransactions, ListAvailableExports, CodeTransactions, DumpSheetToCSV, GroupPayees, ListByCategory, GetWeeklyTransactions, CleanupExports, GetSpendAtPayee
 
 @click.group("import")
 @click.pass_context
@@ -97,6 +97,16 @@ def cleanup_exports(ctx, folder_name: str):
     importer = CleanupExports()
     importer.remove_export_files_from_folder(folder_name)
 
+@click.command('list_payee_spend')
+@click.pass_context
+# @inject
+def list_payee_spend(ctx):
+    '''
+    Import transactions to the spreadsheet from a CSV dump of transactions
+    '''
+    get_spend = GetSpendAtPayee()
+    get_spend.list_spend_at_payee()
+
 
 
 cli.add_command(import_transactions)
@@ -107,3 +117,4 @@ cli.add_command(group_payees)
 cli.add_command(list_by_category)
 cli.add_command(weekly_transactions)
 cli.add_command(cleanup_exports)
+cli.add_command(list_payee_spend)

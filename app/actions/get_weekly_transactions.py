@@ -49,11 +49,11 @@ class GetWeeklyTransactions():
 
             for category, transactions in categories.items():
                 filtered_transactions = [t for t in transactions if t.transaction_type_primary_code not in ['Excluded']]
-                category_spend = sum(t.amount for t in filtered_transactions)
+                category_spend = sum(t.amount for t in filtered_transactions if t.transaction_type_primary_code not in ['Income'])
                 total_spend += category_spend
                 rows.append(f'{category} - ${category_spend:,}')
                 for t in filtered_transactions:
-                    rows.append(f'\t{t.payee} - ${t.amount:,}')
+                    rows.append(f'\t{t.payee} - ${t.amount:,} - {t.date.strftime("%A")}')
             console.print(f'Spend in week {week} of {year} [Total: ${total_spend:,}]')
             for row in rows:
                 console.print(row)

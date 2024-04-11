@@ -8,10 +8,11 @@
             "program": "${workspaceFolder}/app/app.py",
             "console": "integratedTerminal",
             // "args":["import", "list_exports", "/Users/ben.caldwell/Downloads"]
-            // "args":["import", "from_csv", "-o","/Users/ben.caldwell/Downloads"]
+            "args":["import", "from_csv", "-o","/Users/ben.caldwell/Downloads"]
             // "args":["import", "cleanup_exports", "/Users/ben.caldwell/Downloads"]
             // "args":["import", "list_by_category"]
-            "args":["import", "weekly_transactions"]
+            // "args":["import", "weekly_transactions"]
+            // "args":["import", "list_payee_spend"]
             // "args":["import", "code"]
             // "args":["import", "group_payees"]
             // "args":["import", "dump", "~/Downloads"]

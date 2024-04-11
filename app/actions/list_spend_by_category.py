@@ -29,7 +29,7 @@ class ListByCategory():
       sheets_importer = SheetsTransactionImporter(gc)
 
       google_transation_sheet = sheets_importer.load_worksheet_transactions(SAMPLE_SPREADSHEET_ID, "Code Here")
-      raw_transactions = google_transation_sheet.get_raw_transaction()
+      raw_transactions = google_transation_sheet.get_raw_transactions()
       grouped = google_transation_sheet.transactions_grouped_by_category(raw_transactions)
 
       grouped_by_year_and_category: Dict[str, Dict[str, List[Transaction]]] = {}

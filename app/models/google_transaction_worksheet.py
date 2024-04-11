@@ -23,7 +23,7 @@ class GoogleTransactionWorksheet():
         transaction = next((t for id, t in self.transactions.items() if t.row == row), None)
         return transaction
     
-    def get_raw_transaction(self) -> List[GoogleSheetTransaction]:
+    def get_raw_transactions(self) -> List[GoogleSheetTransaction]:
         return [t for _, t in self.transactions.items()]
     
     def get_raw_transactions_between_dates(self, start_date: datetime, end_date: datetime) -> List[GoogleSheetTransaction]:
@@ -70,6 +70,25 @@ class GoogleTransactionWorksheet():
             # if year not in grouped_by_year_and_category: grouped_by_year_and_category[year] = {}
             # grouped_by_year_and_category[year][category] = yearly_transactions
         pass
+
+    def transactions_grouped_by_payee(self, transactions: List[Transaction]) -> Dict[str, List[Transaction]]:
+        result: Dict[str, List[Transaction]] = {}
+        sorted_by_payee = sorted(transactions, key=lambda t: t.payee)
+
+        for k, v in groupby(sorted_by_payee, key=lambda t: t.payee):
+            result[k] = list(v)
+
+        return result
+
+    def group_by_year_and_payee(self, transactions: List[Transaction]) -> Dict[str, Dict[str, List[Transaction]]]:
+        result: Dict[str, Dict[str, List[Transaction]]] = {}
+        grouped_by_year = self.transactions_grouped_by_year(transactions)
+        for year, yearly_transactions in grouped_by_year.items():
+            grouped_by_payee = self.transactions_grouped_by_payee(yearly_transactions)
+            for payee, payee_transactions in grouped_by_payee.items():
+                if year not in result: result[year] = {}
+                result[year][payee] = payee_transactions
+        return result
     
     def group_by_year_and_week_and_category(self, transactions: List[Transaction]) -> Dict[str, Dict[str, Dict[str, List[Transaction]]]]:
         result: Dict[str, Dict[str, Dict[str, Transaction]]] = OrderedDict()

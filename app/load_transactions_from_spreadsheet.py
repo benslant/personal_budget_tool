@@ -93,7 +93,7 @@ class SheetsTransactionImporter():
         work_sheet.update(f'A{start_from_row + 1}', raw_transactions, value_input_option='USER_ENTERED')
     
     def get_last_row_in_transaction_sheet_based_on_transaction_list(self, transactions: OrderedDict[int, Transaction]) -> int:
-        return len((transactions.keys())) + 4
+        return len(transactions.keys()) + 1
     
     def load_coded_transactions_from_spreadsheet(self, sheet_id: str, worksheet_name: str, start_row: int = 1) -> OrderedDict[int, Transaction]:
         result: OrderedDict[int, Transaction] = OrderedDict()
