@@ -1,6 +1,7 @@
 import os
 from typing import Any, Callable, List
 import rich_click as click
+from commands.load_container import load_container_to_context
 from commands import command_list
 
 
@@ -39,26 +40,20 @@ class ComplexCLI(click.MultiCommand):
             # print(name)
             mod = __import__(f"commands.cmd_{name}", None, None, ["cli"])
         except ImportError as e:
-            print(e.args)
-            return
+            raise Exception(e.args)
         return mod.cli
 
 
 @click.group(cls=ComplexCLI, context_settings=CONTEXT_SETTINGS)
 @click.pass_context
-# @inject
 def cli(ctx):
-    """[black on blue]reporttool[/] is a commandline tool that helps gather data for management fuctions
-    including:\n
-    * Reporting on CapEx and OpEx from Jira Project
-    * Deployment to production frequency
-    * Reporting on team structure
-    * Reporting on team metrics
-    * Auditing source code
+    """[black on blue]reporttool[/] is a commandline tool
     """
     # console = Console()
     try:
         ctx.obj = CLIContext()
+        ctx.obj.verbose = False
+        ctx.obj.load_container = load_container_to_context
     except Exception as e:
         pass
 

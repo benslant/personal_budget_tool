@@ -1,34 +1,26 @@
-from itertools import groupby
+from services.configuration_service import ConfigurationService
 from typing import Dict, List
 from googleapiclient.errors import HttpError
-from gspread import authorize, Client
-from oauth2client.service_account import ServiceAccountCredentials
-from models import TransactionType, Transaction
+from models import Transaction
 from load_transactions_from_spreadsheet import SheetsTransactionImporter
-from transactions_service import TransactionsService
-from transaction_code_service import TransactionCodeService
 from rich.console import Console
-import click
 
-scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-
-# The ID and range of a sample spreadsheet.
-SAMPLE_SPREADSHEET_ID = "12Act5Oi7BwzzeurYbKmnh-2JrpdPztVjtY0z9AUGaGY"
-
-credentials = ServiceAccountCredentials.from_json_keyfile_name('/Users/ben.caldwell/Downloads/budgetspreadshe-f6204ad0981b.json', scope)
 
 class ListByCategory():
 
-  def __init__(self) -> None:
-    pass
+  def __init__(self,
+               sheets_importer: SheetsTransactionImporter,
+               configuration: ConfigurationService) -> None:
+    self.sheets_importer = sheets_importer
+    self.configuration = configuration
 
   def list_by_category(self):
     console = Console()
-    try:
-      gc: Client = authorize(credentials)
-      sheets_importer = SheetsTransactionImporter(gc)
 
-      google_transation_sheet = sheets_importer.load_worksheet_transactions(SAMPLE_SPREADSHEET_ID, "Code Here")
+    sheet = self.configuration.get_value_by_key('google_sheet')
+    sheet_id = sheet['spreadsheet_id']
+    try:
+      google_transation_sheet = self.sheets_importer.load_worksheet_transactions(sheet_id, "Code Here")
       raw_transactions = google_transation_sheet.get_raw_transactions()
       grouped = google_transation_sheet.transactions_grouped_by_category(raw_transactions)
 

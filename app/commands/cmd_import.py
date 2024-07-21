@@ -1,37 +1,42 @@
-# from dependency_injector.wiring import Provide, inject
 import rich_click as click
-from actions import ImportTransactions, ListAvailableExports, CodeTransactions, DumpSheetToCSV, GroupPayees, ListByCategory, GetWeeklyTransactions, CleanupExports, GetSpendAtPayee
+from dependency_injector.wiring import Provide, inject
+from actions import (CodeTransactions,
+                     DumpSheetToCSV, 
+                     GroupPayees, 
+                     ListByCategory, 
+                     GetWeeklyTransactions, 
+                     CleanupExports, 
+                     GetSpendAtPayee)
 
 @click.group("import")
 @click.pass_context
-# @inject
+@inject
 def cli(ctx):
     """Command to import transactions
     """
-    pass
+    if ctx.obj.load_container: 
+        ctx.obj.load_container(ctx)
 
 @click.command('from_csv')
 @click.option('-f', "file_name", required=False, type=click.STRING)
 @click.option('-o', "folder_name", required=False, type=click.STRING)
 @click.pass_context
-# @inject
-def import_transactions(ctx, file_name: str, folder_name: str):
+@inject
+def import_transactions(ctx, file_name: str, folder_name: str, action = Provide["IImportTransactions"]):
     '''
     Import transactions to the spreadsheet from a CSV dump of transactions
     '''
-    importer = ImportTransactions()
-    importer.import_transactions(file_name, folder_name)
+    action.import_transactions(file_name, folder_name)
 
 @click.command('list_exports')
 @click.argument("folder_name", type=click.STRING)
 @click.pass_context
-# @inject
-def list_exports(ctx, folder_name: str):
+@inject
+def list_exports(ctx, folder_name: str, action = Provide["IListAvailableExports"]):
     '''
     Import transactions to the spreadsheet from a CSV dump of transactions
     '''
-    importer = ListAvailableExports()
-    importer.list_exports_in_directory(folder_name)
+    action.list_exports_in_directory(folder_name)
 
 @click.command('code')
 @click.pass_context
@@ -66,13 +71,12 @@ def group_payees(ctx):
 
 @click.command('list_by_category')
 @click.pass_context
-# @inject
-def list_by_category(ctx):
+@inject
+def list_by_category(ctx, action = Provide("IListSpendByCategory")):
     '''
     Import transactions to the spreadsheet from a CSV dump of transactions
     '''
-    grouper = ListByCategory()
-    grouper.list_by_category()
+    action.list_by_category()
 
 @click.command('weekly_transactions')
 @click.option('-r', 'rweek', type=click.INT, help='Specify the relative week you want to list')

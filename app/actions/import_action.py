@@ -1,31 +1,25 @@
 from itertools import groupby
 from typing import Dict, List, Optional
 from googleapiclient.errors import HttpError
-from gspread import authorize, Client
-from oauth2client.service_account import ServiceAccountCredentials
 from models.transaction_csv_file import TransactionCSVFile
 from load_transactions_from_csv import CSVTransactionImporter 
 from load_transactions_from_spreadsheet import SheetsTransactionImporter
 from transactions_service import TransactionsService
 import rich_click as click
 from rich.console import Console
+from services.google.sheets import GoogleSheetClient
 
-scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-
-# The ID and range of a sample spreadsheet.
-SAMPLE_SPREADSHEET_ID = "12Act5Oi7BwzzeurYbKmnh-2JrpdPztVjtY0z9AUGaGY"
-
-credentials = ServiceAccountCredentials.from_json_keyfile_name('/Users/ben.caldwell/Downloads/budgetspreadshe-f6204ad0981b.json', scope)
 
 class ImportTransactions():
 
-  def __init__(self) -> None:
-    pass
+  def __init__(self,
+               google_sheet_client: GoogleSheetClient) -> None:
+    self.google_sheet_client = google_sheet_client
 
   def import_transactions(self, file_name: Optional[str], folder_name: Optional[str]):
     console = Console()
     try:
-      gc: Client = authorize(credentials)
+      gc = self.google_sheet_client.get_client()
       csv_importer = CSVTransactionImporter()
       sheets_importer = SheetsTransactionImporter(gc)
       transaction_service = TransactionsService()

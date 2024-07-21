@@ -16,6 +16,9 @@ thefuzz = "^0.22.1"
 click = "^8.1.7"
 rich-click = "^1.7.4"
 python-dateutil = "^2.9.0.post0"
+toml = "^0.10.2"
+dependency-injector-fork = "^4.42.1"
+structlog = "^24.1.0"
 
 [build-system]
 requires = ["poetry-core"]
