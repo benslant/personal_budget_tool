@@ -4,7 +4,8 @@ from gspread import Client
 
 class TransactionCodeService():
 
-    def __init__(self, google_sheets_client: Client) -> None:
+    def __init__(self, 
+                 google_sheets_client: Client) -> None:
         self.google_sheets_client = google_sheets_client
 
     def get_transaction_codes(self, sheet_id: str) -> List[str]:

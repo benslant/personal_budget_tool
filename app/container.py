@@ -1,6 +1,6 @@
 from actions import *
 from actions.import_action import ImportTransactions
-from services import ConfigurationService, get_logger
+from services import ConfigurationService, get_logger, TransactionCodeService
 from services.google.sheets import GoogleSheetClient, GoogleSheetCredentials
 from structlog import BoundLogger
 from dependency_injector import containers, providers
@@ -25,16 +25,24 @@ class DynamicContainer(containers.DynamicContainer):
         credentials = ServiceAccountCredentials.from_json_keyfile_name('/Users/ben.caldwell/Downloads/budgetspreadshe-f6204ad0981b.json', scope)
         self.gc: Client = authorize(credentials)
         self.sheets_importer = SheetsTransactionImporter(self.gc)
+        self.ITransactionCodeService: Singleton[TransactionCodeService] = providers.Singleton(TransactionCodeService,
+                                                                                              google_sheets_client=self.gc)
         self.IGoogleSheetCredentials: Singleton[GoogleSheetCredentials] = providers.Singleton(GoogleSheetCredentials,
                                                                                                configuration = self.IConfigurationProvider)
         self.IGoogleSheetClient: Singleton[GoogleSheetClient] = providers.Singleton(GoogleSheetClient,
                                                                                      credentials = self.IGoogleSheetCredentials)
         self.IImportTransactions: Singleton[ImportTransactions] = providers.Singleton(ImportTransactions,
-                                                                                       google_sheet_client = self.IGoogleSheetClient)
+                                                                                      sheets_importer = self.sheets_importer,
+                                                                                      configuration=self.IConfigurationProvider)
         self.IListAvailableExports: Singleton[ListAvailableExports] = providers.Singleton(ListAvailableExports,
                                                                                           configuration=self.IConfigurationProvider)
         self.IListSpendByCategory: Singleton[ListByCategory] = providers.Singleton(ListByCategory,
                                                                                    sheets_importer = self.sheets_importer,
                                                                                    configuration=self.IConfigurationProvider)
-        
-
+        self.IGetWeeklyTransactions: Singleton[GetWeeklyTransactions] = providers.Singleton(GetWeeklyTransactions,
+                                                                                   sheets_importer = self.sheets_importer,
+                                                                                   configuration=self.IConfigurationProvider) 
+        self.ICodeTransactions: Singleton[CodeTransactions] = providers.Singleton(CodeTransactions,
+                                                                                  transaction_code_service=self.ITransactionCodeService,
+                                                                                  sheets_importer=self.sheets_importer,
+                                                                                  configuration=self.IConfigurationProvider)

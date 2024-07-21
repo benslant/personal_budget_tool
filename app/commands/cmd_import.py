@@ -40,13 +40,12 @@ def list_exports(ctx, folder_name: str, action = Provide["IListAvailableExports"
 
 @click.command('code')
 @click.pass_context
-# @inject
-def code_transactions(ctx):
+@inject
+def code_transactions(ctx, action = Provide["ICodeTransactions"]):
     '''
     Import transactions to the spreadsheet from a CSV dump of transactions
     '''
-    coder = CodeTransactions()
-    coder.code_transactions()
+    action.code_transactions()
 
 @click.command('dump')
 @click.argument('destination', type=click.STRING)
@@ -82,13 +81,12 @@ def list_by_category(ctx, action = Provide("IListSpendByCategory")):
 @click.option('-r', 'rweek', type=click.INT, help='Specify the relative week you want to list')
 @click.option('-y', 'year', type=click.INT, help='Specify the year you want to list')
 @click.pass_context
-# @inject
-def weekly_transactions(ctx, year: int = 0, rweek: int = 0):
+@inject
+def weekly_transactions(ctx, year: int = 0, rweek: int = 0, action = Provide("IGetWeeklyTransactions")):
     '''
     Import transactions to the spreadsheet from a CSV dump of transactions
     '''
-    grouper = GetWeeklyTransactions()
-    grouper.list_weekly_transactions(year, rweek)
+    action.list_weekly_transactions(year, rweek)
 
 @click.command('cleanup_exports')
 @click.argument("folder_name", type=click.STRING)
