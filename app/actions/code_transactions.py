@@ -43,8 +43,6 @@ class CodeTransactions():
       result = google_transation_sheet.transactions
       unique_payees = transaction_service.group_payees_by_name_similarity(result)
       grouped_by_payee = self.sheets_importer.group_transactions_by_payee(result)
-      payees = [k for k,_ in grouped_by_payee.items()]
-      cp = self.sheets_importer.consolidate_payees(payees)
       coding_history = self.sheets_importer.get_coding_history(grouped_by_payee)
       uncoded = self.sheets_importer.get_uncoded_transactions(result)
       coded = self.sheets_importer.code_transactions(uncoded, coding_history)
@@ -58,10 +56,6 @@ class CodeTransactions():
       console.print(f'There are [{len(unique_payees)}] unique uncodable payees!')
 
       worksheet = self.sheets_importer.get_worksheet(sheet_id, "Code Here")
-
-      # a = google_transation_sheet.get_row_by_transaction_id(2022061303)
-      b = google_transation_sheet.get_transaction_by_row(923)
-      c = google_transation_sheet.get_transaction_by_row(1156)
 
       with click.progressbar(length=len(coded), label='Autocoding transactions that match previous patterns...') as bar: 
         for _, transaction in coded.items():
