@@ -9,8 +9,6 @@ from rich.console import Console
 
 scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
 
-# credentials = ServiceAccountCredentials.from_json_keyfile_name('/Users/ben.caldwell/Downloads/budgetspreadshe-f6204ad0981b.json', scope)
-
 class GetWeeklyTransactions():
 
   def __init__(self,
