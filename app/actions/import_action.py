@@ -42,7 +42,7 @@ class ImportTransactions():
         for account_number, transactions in grouped_by_account_number.items():
           console.print(f'{transactions[0].account.label} - {account_number}')
           for transaction in transactions:
-            option = f'({index}) from: {transaction.from_date.strftime('%Y-%m-%d')} to: {transaction.to_date.strftime('%Y-%m-%d')} exported on: {transaction.export_date.strftime('%Y-%m-%d')} - \[{transaction.folder_name}/{transaction.file_name}]'
+            option = f'({index}) from: {transaction.from_date.strftime('%Y-%m-%d')} to: {transaction.to_date.strftime('%Y-%m-%d')} exported on: {transaction.export_date.strftime('%Y-%m-%d')} - \\[{transaction.folder_name}/{transaction.file_name}]'
             console.print(option)
             file_list.append(transaction)
             index += 1

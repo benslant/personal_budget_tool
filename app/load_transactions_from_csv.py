@@ -9,8 +9,8 @@ from re import compile
 
 
 transaction_export_filename_pattern = compile('Export([0-9]{4})([0-9]{2})([0-9]{2})([0-9]{2})([0-9]{2})([0-9]{2}).csv')
-pattern = 'Created date \/ time : ([0-9]{1,2}) (\w+) ([0-9]{4}) \/ ([0-9]{2}):([0-9]{2}):([0-9]{2})'
-to_from_date_pattern = compile('\w+ date ([0-9]{4})([0-9]{2})([0-9]{2})')
+pattern = 'Created date \\/ time : ([0-9]{1,2}) (\\w+) ([0-9]{4}) \\/ ([0-9]{2}):([0-9]{2}):([0-9]{2})'
+to_from_date_pattern = compile('\\w+ date ([0-9]{4})([0-9]{2})([0-9]{2})')
 
 class CSVTransactionImporter():
 

@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from re import compile
 
-pattern = compile("([0-9]{2}); Branch ([0-9]{4}); Account ([0-9]{7})-([0-9]{2}) \((.*)\)")
+pattern = compile("([0-9]{2}); Branch ([0-9]{4}); Account ([0-9]{7})-([0-9]{2}) \\((.*)\\)")
 
 @dataclass
 class Account():

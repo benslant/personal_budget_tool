@@ -6,7 +6,7 @@ from models import Transaction, AliasMatch, Payee
 from thefuzz import fuzz
 from re import compile
 
-non_word_pattern = compile('([A-Za-z]+[\d]+[\w]*|[\d]+[A-Za-z]+[\w]*)')
+non_word_pattern = compile('([A-Za-z]+[\\d]+[\\w]*|[\\d]+[A-Za-z]+[\\w]*)')
 
 class TransactionsService():
 

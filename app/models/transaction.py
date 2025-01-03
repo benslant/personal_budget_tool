@@ -6,7 +6,7 @@ from models import TransactionType
 from re import compile
 
 pattern_card_number = compile("CARD ([0-9]{4})(.*)")
-pattern_exchange_rate = compile("(.*)(at ([0-9]{1}\.[0-9]{4}))")
+pattern_exchange_rate = compile("(.*)(at ([0-9]{1}\\.[0-9]{4}))")
 pattern_native_amount = compile("^([A-Z]{3}) ([0-9]+.[0-9]{2})(.*)")
 
 @dataclass
