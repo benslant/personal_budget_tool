@@ -2,12 +2,13 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python Debugger: Current File",
+            "name": "Python Debugger: Personal Budget Tool",
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/app/app.py",
             "console": "integratedTerminal",
             "justMyCode": false,
+						"cwd": "${workspaceFolder}", 
             // "args":["import", "list_exports", "/Users/ben.caldwell/Downloads"]
             // "args":["import", "from_csv", "-o","/Users/ben.caldwell/Downloads"]
             // "args":["import", "cleanup_exports", "/Users/ben.caldwell/Downloads"]

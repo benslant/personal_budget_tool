@@ -17,8 +17,7 @@ scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/au
 # The ID and range of a sample spreadsheet.
 SAMPLE_SPREADSHEET_ID = "12Act5Oi7BwzzeurYbKmnh-2JrpdPztVjtY0z9AUGaGY"
 
-credentials = ServiceAccountCredentials.from_json_keyfile_name('/Users/ben.caldwell/Downloads/budgetspreadshe-f6204ad0981b.json', scope)
-transaction_sheet_pattern = compile('([\w+ ]+) - ([0-9]{2})-([0-9]{4})-([0-9]{7})-([0-9]{2})')
+transaction_sheet_pattern = compile('([\\w+ ]+) - ([0-9]{2})-([0-9]{4})-([0-9]{7})-([0-9]{2})')
 
 class DumpSheetToCSV():
 
@@ -51,6 +50,7 @@ class DumpSheetToCSV():
       console.print('Error! No destination directory provided.')
       return
     try:
+      credentials = ServiceAccountCredentials.from_json_keyfile_name('/Users/ben.caldwell/Downloads/budgetspreadshe-f6204ad0981b.json', scope)
       gc: Client = authorize(credentials)
       sheets_importer = SheetsTransactionImporter(gc)
       transaction_service = TransactionsService()

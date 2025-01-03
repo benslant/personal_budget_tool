@@ -11,7 +11,6 @@ scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/au
 # The ID and range of a sample spreadsheet.
 SAMPLE_SPREADSHEET_ID = "12Act5Oi7BwzzeurYbKmnh-2JrpdPztVjtY0z9AUGaGY"
 # non_word_pattern = compile('([A-Za-z]+[\d]+[\w]*|[\d]+[A-Za-z]+[\w]*)')
-credentials = ServiceAccountCredentials.from_json_keyfile_name('/Users/ben.caldwell/Downloads/budgetspreadshe-f6204ad0981b.json', scope)
 
 class GroupPayees():
 
@@ -21,6 +20,7 @@ class GroupPayees():
   def group(self):
     console = Console()
 
+    credentials = ServiceAccountCredentials.from_json_keyfile_name('/Users/ben.caldwell/Downloads/budgetspreadshe-f6204ad0981b.json', scope)
     gc: Client = authorize(credentials)
     sheets_importer = SheetsTransactionImporter(gc)
     transaction_service = TransactionsService()

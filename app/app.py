@@ -1,6 +1,7 @@
 import os
 from typing import Any, Callable, List
 import rich_click as click
+from rich_click.rich_command import RichMultiCommand
 from commands.load_container import load_container_to_context
 from commands import command_list
 
@@ -17,7 +18,7 @@ class CLIContext(object):
 context = click.make_pass_decorator(CLIContext)
 cmd_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), "commands"))
 
-class ComplexCLI(click.MultiCommand):
+class ComplexCLI(RichMultiCommand):
 
     def __init__(self, name: str | None = None, 
                  invoke_without_command: bool = False, 
@@ -28,8 +29,8 @@ class ComplexCLI(click.MultiCommand):
                  **attrs: Any) -> None:
         super().__init__(name, invoke_without_command, no_args_is_help, subcommand_metavar, chain, result_callback, **attrs)
 
-    def format_help(self, ctx: click.Context, formatter: click.HelpFormatter):
-        click.rich_click.rich_format_help(self, ctx, formatter)
+    # def format_help(self, ctx: click.Context, formatter: click.HelpFormatter):
+    #     click.rich_click.rich_format_help(self, ctx, formatter)
 
     def list_commands(self, ctx) -> List[str]:
         result = sorted(command_list)

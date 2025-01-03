@@ -13,7 +13,6 @@ scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/au
 # The ID and range of a sample spreadsheet.
 SAMPLE_SPREADSHEET_ID = "12Act5Oi7BwzzeurYbKmnh-2JrpdPztVjtY0z9AUGaGY"
 
-credentials = ServiceAccountCredentials.from_json_keyfile_name('/Users/ben.caldwell/Downloads/budgetspreadshe-f6204ad0981b.json', scope)
 
 class GetSpendAtPayee():
 
@@ -23,6 +22,7 @@ class GetSpendAtPayee():
   def list_spend_at_payee(self):
     console = Console()
     try:
+      credentials = ServiceAccountCredentials.from_json_keyfile_name('/Users/ben.caldwell/Downloads/budgetspreadshe-f6204ad0981b.json', scope)
       gc: Client = authorize(credentials)
       sheets_importer = SheetsTransactionImporter(gc)
 

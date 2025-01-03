@@ -14,7 +14,7 @@ class ConfigurationService():
         self.config_file_name = f'.{app_name}_config.toml'
         self.logger = logger
 
-    def load(self) -> bool:
+    def load(self):
         try:
             file_path = Path(f"{self.app_folder}/{self.config_file_name}")
             if not os.path.exists(str(self.app_folder)):
@@ -25,7 +25,7 @@ class ConfigurationService():
                     toml.dump(self.config, toml_file)
             self.config = toml.load(file_path)
         except Exception as e:
-            raise Exception('There was an issue loading the configuration file!')
+            raise Exception(f'There was an issue loading the configuration file!: {e}')
 
     def get_value_by_key(self, key: str) -> Any:
         return self.config[key]
