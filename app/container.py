@@ -22,7 +22,7 @@ class DynamicContainer(containers.DynamicContainer):
         self.IConfigurationProvider().load()
         sheet = self.IConfigurationProvider().get_value_by_key('google_sheet')
         scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-        credentials = ServiceAccountCredentials.from_json_keyfile_name('/Users/ben.caldwell/Downloads/budgetspreadshe-f6204ad0981b.json', scope)
+        credentials = ServiceAccountCredentials.from_json_keyfile_name(sheet['key_file'], scope)
         self.gc: Client = authorize(credentials)
         self.sheets_importer = SheetsTransactionImporter(self.gc)
         self.ITransactionCodeService: Singleton[TransactionCodeService] = providers.Singleton(TransactionCodeService,
